@@ -10,8 +10,15 @@ const applications = {};
 
 module.exports = class BotDetails extends Plugin {
 	async startPlugin() {
-		const UserPopOutComponents = await getModule(['UserPopoutProfileText']);
-		const Constants = await getModule(['Endpoints']);
+		const UserPopOutComponents = await getModule(['UserPopoutProfileText'], false);
+		const Constants = await getModule(['Endpoints'], false);
+		const { Heading } = await getModule(['Heading'], false);
+		const { userInfoSection, userInfoBody, userInfoTitle } = await getModule(
+			['userInfoSection', 'userInfoBody', 'userInfoTitle'],
+			false
+		);
+		const { defaultColor } = getModule(['defaultColor', 'selectable'], false);
+		const { markup } = getModule(['desaturate', 'markup'], false);
 
 		function Intents(applicationId, setIntents) {
 			return async () => {
@@ -47,26 +54,12 @@ module.exports = class BotDetails extends Plugin {
 				React.useEffect(Intents(applicationId, setIntents), [applicationId]);
 
 				res.props.children.push(
-					React.createElement(
-						'div',
-						{ className: 'userInfoSection-3her-v' },
-						React.createElement(
-							'h3',
-							{
-								className: 'eyebrow-Ejf06y defaultColor-HXu-5n userInfoTitle-39qq0Y',
-								style: { color: 'var(--header-secondary)' }
-							},
-							'Intents'
-						),
-						React.createElement(
-							'div',
-							{
-								className: 'userInfoBody-1zgAd0 markup-eYLPri clamped-2ZePhX'
-							},
-
-							getIntents(intents)
-						)
-					)
+					<div className={userInfoSection}>
+						<Heading variant="eyebrow" level={3} className={userInfoTitle} color="header-secondary">
+							Intents
+						</Heading>
+						<div className={userInfoBody + ' ' + markup}>{getIntents(intents)}</div>
+					</div>
 				);
 
 				return res;
