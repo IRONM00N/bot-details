@@ -17,7 +17,6 @@ module.exports = class BotDetails extends Plugin {
 			['userInfoSection', 'userInfoBody', 'userInfoTitle'],
 			false
 		);
-		const { defaultColor } = getModule(['defaultColor', 'selectable'], false);
 		const { markup } = getModule(['desaturate', 'markup'], false);
 
 		function Intents(applicationId, setIntents) {
