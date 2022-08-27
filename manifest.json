@@ -1,0 +1,8 @@
+{
+	"name": "bot-details",
+	"description": "Add extra information about bots in their profiles.",
+	"author": "IRONM00N",
+	"license": "MIT",
+	"permissions": [],
+	"version": "0.0.1"
+}
