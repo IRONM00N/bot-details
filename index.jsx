@@ -1,7 +1,6 @@
 const { Plugin } = require('powercord/entities');
 const { inject, uninject } = require('powercord/injector');
 const { React, getModule } = require('powercord/webpack');
-const { get } = require('powercord/http');
 
 /**
  * @type {Record<string, {flags: number}|undefined>}
@@ -10,24 +9,24 @@ const applications = {};
 
 module.exports = class BotDetails extends Plugin {
 	async startPlugin() {
-		const UserPopOutComponents = await getModule(['UserPopoutProfileText'], false);
-		const Constants = await getModule(['Endpoints'], false);
-		const { Heading } = await getModule(['Heading'], false);
-		const { userInfoSection, userInfoBody, userInfoTitle } = await getModule(
+		const UserPopOutComponents = getModule(['UserPopoutProfileText'], false);
+		const Constants = getModule(['Endpoints'], false);
+		const { Heading } = getModule(['Heading'], false);
+		const { userInfoSection, userInfoBody, userInfoTitle } = getModule(
 			['userInfoSection', 'userInfoBody', 'userInfoTitle'],
 			false
 		);
 		const { markup } = getModule(['desaturate', 'markup'], false);
+		const rest = getModule(['default', 'setRequestPatch'], false);
 
 		function Intents(applicationId, setIntents) {
 			return async () => {
 				if (typeof applications[applicationId]?.flags !== 'number') {
-					applications[applicationId] = await get(
-						`https://discord.com/api${Constants.Endpoints.APPLICATION_RPC(applicationId)}`
-					)
+					applications[applicationId] = await rest.default
+						.get({ url: Constants.Endpoints.APPLICATION_RPC(applicationId), oldFormErrors: true, retries: 3 })
 						.catch((e) => (console.error(e), e))
 						.then((res) => {
-							if (res.statusCode === 200) {
+							if (res.status === 200) {
 								return res.body;
 							}
 
